@@ -1,6 +1,15 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import localFont from 'next/font/local';
+import "@/styles/globals.css";
+import '@toast-ui/editor/toastui-editor.css';
+
+const pretendard = localFont({
+  src: '../../public/fonts/PretendardVariable.woff2',
+  display: 'swap',
+  weight: '45 920',
+  variable: '--font-pretendard',
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,9 +32,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${pretendard.variable}`}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${pretendard.className} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
       </body>
