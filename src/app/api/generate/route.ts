@@ -1,15 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
-import OpenAI from 'openai';
+// import OpenAI from 'openai';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// const openai = new OpenAI({
+//   apiKey: process.env.OPENAI_API_KEY,
+// });
+
+import { getMockBlogData } from './mock';
+const USE_MOCK = true;
 
 export async function POST(request: NextRequest) {
   try {
-    const { topic, keywords, style } = await request.json();
+    const { topic, keywords, style, tone = 'kind' } = await request.json();
 
-    const systemPrompt = getSystemPrompt(style);
+    if(USE_MOCK) {
+      const mockResult = getMockBlogData({
+        topic,
+        keywords,
+        style,
+        tone,
+      });
+
+      return NextResponse.json(mockResult);
+    }
+
+    const systemPrompt = getSystemPrompt(style, tone);
     const userPrompt = `
       주제: ${topic}
       키워드: ${keywords.join(', ')}
@@ -23,7 +37,9 @@ export async function POST(request: NextRequest) {
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt },
       ],
+      response_format: {type: 'json_object'},
       max_tokens: 2000,
+      temperature: 0.7 // 검색
     });
 
     const content = completion.choices[0].message.content;
@@ -39,17 +55,29 @@ export async function POST(request: NextRequest) {
   }
 }
 
-function getSystemPrompt(style: string): string {
-  const basePrompt = `당신은 기술 블로그 전문 작가입니다.
-    사용자가 제공한 주제와 키워드를 바탕으로 기술 블로그 글을 작성합니다.
+function getSystemPrompt(style: string, tone: string): string {
 
-    응답은 반드시 아래 JSON 형식으로만 해주세요:
-    {
-      "title": "SEO에 최적화된 제목",
-      "content": "마크다운 형식의 본문",
-      "hashtags": ["태그1", "태그2", "태그3"],
-      "metaDescription": "SEO 메타 설명 (160자 이내)"
-    }`;
+
+  const toneGuides: Record<string, string> = {
+    kind: `
+    모든 문장은 반드시 "~해요", "~입니다"로 끝나야 합니다.
+    다른 종결어미(~다, ~함, ~이다 등)를 사용하면 안 됩니다.
+    설명하듯 친절한 선생님 말투로 작성하세요.
+    `,
+
+      minimal: `
+    모든 문장은 반드시 명사형 또는 "~함", "~임"으로 끝나야 합니다.
+    존댓말(~요, ~습니다)을 사용하면 안 됩니다.
+    불필요한 설명 없이 핵심만 전달하는 개발자 말투로 작성하세요.
+    `,
+
+      formal: `
+    모든 문장은 반드시 과거형 서술체로 작성하세요.
+    문장 끝은 "~했다", "~이다"로 통일합니다.
+    회고록 또는 개발 일지 형식의 말투를 사용하세요.
+    `
+  };
+
 
   const styleGuides: Record<string, string> = {
     tutorial: `
@@ -72,5 +100,26 @@ function getSystemPrompt(style: string): string {
       4. 결론: 배운 점과 예방법`,
   };
 
-  return basePrompt + (styleGuides[style] || styleGuides.tutorial);
+  const selectedStyle = styleGuides[style] || styleGuides.tutorial;
+  const selectedTone = toneGuides[tone] || toneGuides.kind;
+
+    const basePrompt = `당신은 기술 블로그 전문 작가입니다.
+    사용자가 제공한 주제와 키워드를 바탕으로 기술 블로그 글을 작성합니다.
+    
+    반드시 JSON 형식으로만 응답해야 됩니다.
+
+    [작성 가이드]
+    - 말투: ${selectedTone}
+    - 글 형식: ${selectedStyle}
+    - 코드 하이라이팅: 모든 코드는 마크다운의 코드 블록(\`\`\`language)을 사용하세요.
+
+    [응답 JSON 구조]
+    {
+      "title": "SEO에 최적화된 제목",
+      "content": "마크다운 형식의 본문",
+      "hashtags": ["태그1", "태그2", "태그3"],
+      "metaDescription": "SEO 메타 설명 (160자 이내)"
+    }`;
+  
+  return basePrompt;
 }
