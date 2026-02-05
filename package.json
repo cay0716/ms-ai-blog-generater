@@ -9,8 +9,10 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@toast-ui/react-editor": "^3.2.3",
     "next": "16.1.6",
     "openai": "^6.17.0",
+    "prettier": "^3.8.1",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },
