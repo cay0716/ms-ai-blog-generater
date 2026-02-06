@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import localFont from 'next/font/local';
-import "@/styles/globals.css";
+import "@/app/globals.css";
 import '@toast-ui/editor/toastui-editor.css';
 
 const pretendard = localFont({
