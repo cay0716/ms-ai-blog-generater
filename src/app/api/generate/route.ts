@@ -1,17 +1,18 @@
+export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
-// import OpenAI from 'openai';
+import OpenAI from 'openai';
 
-// const openai = new OpenAI({
-//   apiKey: process.env.OPENAI_API_KEY,
-// });
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 import { getMockBlogData } from './mock';
-const USE_MOCK = true;
+const USE_MOCK = false;
 
 export async function POST(request: NextRequest) {
   try {
     const { topic, keywords, style, tone = 'kind' } = await request.json();
-
+    console.log('style:', style, 'tone:', tone);
     if(USE_MOCK) {
       const mockResult = getMockBlogData({
         topic,
@@ -82,22 +83,66 @@ function getSystemPrompt(style: string, tone: string): string {
   const styleGuides: Record<string, string> = {
     tutorial: `
       글 구조:
-      1. 개요: 무엇을 배울 수 있는지 소개
-      2. 사전 준비: 필요한 환경/지식
-      3. Step 1, 2, 3...: 단계별 설명 (코드 예시 포함)
-      4. 마무리: 요약 및 다음 학습 방향`,
+      1. 개요
+        - 이 글에서 다루는 주제
+        - 대상 독자 (예: React 초보자, 실무 1~2년 차 등)
+        - 완성 후 얻게 되는 결과
+      2. 사전 준비
+        - 필요한 환경 (버전 명시)
+        - 선수 지식
+      3. 구현 과정
+        - Step 1, 2, 3... 단계별 설명
+        - 각 단계마다 코드 예시 + 설명
+        - 왜 이렇게 작성하는지 이유 포함
+      4. 자주 하는 실수 & 주의사항
+        - 초보자가 헷갈리는 포인트 정리
+
+      5. 마무리
+        - 핵심 요약
+        - 응용 아이디어 또는 다음 학습 방향`,
     til: `
       글 구조:
-      1. 오늘 배운 것: 핵심 개념 요약
-      2. 상세 내용: 코드 예시와 함께 설명
-      3. 어려웠던 점: 겪은 문제와 해결 과정
-      4. 느낀 점: 개인적인 소감`,
+      1. 오늘 배운 핵심 요약
+        - 한 문장 요약
+        - 키워드 리스트
+
+      2. 배경
+        - 왜 이 내용을 학습하게 되었는지
+
+      3. 상세 내용
+        - 개념 설명
+        - 코드 예시
+        - 실제 사용 시 포인트
+
+      4. 삽질 기록
+        - 막혔던 부분
+        - 처음에 잘못 생각했던 점
+
+      5. 정리 & 회고
+        - 오늘의 교훈
+        - 다음에 비슷한 상황에서 어떻게 할지
+      `,
     troubleshooting: `
       글 구조:
-      1. 문제 상황: 발생한 에러/문제 설명
-      2. 원인 분석: 왜 이 문제가 발생했는지
-      3. 해결 방법: 단계별 해결 과정 (코드 포함)
-      4. 결론: 배운 점과 예방법`,
+      1. 한 줄 요약
+        - 에러 메시지
+        - 해결 방법 요약
+
+      2. 문제 상황
+        - 발생한 에러/증상
+        - 발생 환경 (OS, 버전, 라이브러리)
+
+      3. 원인 분석
+        - 왜 이 문제가 발생했는지
+        - 잘못된 코드/설정 예시
+
+      4. 해결 방법
+        - 단계별 해결 과정
+        - 수정된 코드
+
+      5. 예방 방법
+        - 같은 문제를 피하기 위한 체크리스트
+      `,
   };
 
   const selectedStyle = styleGuides[style] || styleGuides.tutorial;
@@ -111,7 +156,7 @@ function getSystemPrompt(style: string, tone: string): string {
     [작성 가이드]
     - 말투: ${selectedTone}
     - 글 형식: ${selectedStyle}
-    - 코드 하이라이팅: 모든 코드는 마크다운의 코드 블록(\`\`\`language)을 사용하세요.
+    - 코드 하이라이팅: 모든 코드는 틸드(~~~)를 사용하세요.
 
     [응답 JSON 구조]
     {

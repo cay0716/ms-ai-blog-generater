@@ -14,8 +14,4 @@ export interface GenerateFormState {
   tone: ToneType;
   topic: string;
   keywords: string;
-  setStyle: (v: StyleType) => void;
-  setTone: (v: ToneType) => void;
-  setTopic: (v: string) => void;
-  setKeywords: (v: string) => void;
 }
