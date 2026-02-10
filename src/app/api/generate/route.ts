@@ -12,7 +12,7 @@ const USE_MOCK = false;
 export async function POST(request: NextRequest) {
   try {
     const { topic, keywords, style, tone = 'kind' } = await request.json();
-    console.log('style:', style, 'tone:', tone);
+
     if(USE_MOCK) {
       const mockResult = getMockBlogData({
         topic,
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('API Error:', error);
     return NextResponse.json(
-      { error: '글 생성에 실패했습니다.' },
+      { error: '요청이 많아 글 생성을 완료하지 못했어요. 잠시만 기다렸다가 다시 시도해 주세요.' },
       { status: 500 }
     );
   }
@@ -114,7 +114,7 @@ function getSystemPrompt(style: string, tone: string): string {
         - 코드 예시
         - 실제 사용 시 포인트
 
-      4. 삽질 기록
+      4. 시행착오
         - 막혔던 부분
         - 처음에 잘못 생각했던 점
 
