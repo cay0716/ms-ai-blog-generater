@@ -128,3 +128,37 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+@layer components {
+  @keyframes dotPulse {
+    0% {
+      transform: scale(0.8);
+      opacity: 0.4;
+    }
+    50% {
+      transform: scale(1.2);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(0.8);
+      opacity: 0.4;
+    }
+  }
+
+  .loading-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 9999px;
+    background-color: #111;
+    animation: dotPulse 1.4s infinite ease-in-out both;
+  }
+
+  .loading-dot.delay-100 {
+    animation-delay: 0.2s;
+  }
+
+  .loading-dot.delay-200 {
+    animation-delay: 0.4s;
+  }
+}
