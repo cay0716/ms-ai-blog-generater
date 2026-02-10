@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Hero from '@/components/Hero';
-import GenerateForm from '@/components/GenerateForm/GenerateForm';
+import GenerateForm from '@/components/generateForm/GenerateForm';
 import { type GeneratedContent, GenerateFormState} from '@/types/generate';
 import ResultViewer from '@/components/ResultViewer';
 
