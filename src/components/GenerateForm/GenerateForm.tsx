@@ -1,5 +1,5 @@
-import ContentFieldset from '@/components/GenerateForm/ContentFieldset';
-import { StyleFieldset } from '@/components/GenerateForm/StyleFieldset';
+import ContentFieldset from '@/components/generateForm/ContentFieldset';
+import { StyleFieldset } from '@/components/generateForm/StyleFieldset';
 import type { GenerateFormState } from '@/types/generate';
 
 
@@ -20,7 +20,7 @@ export default function GenerateForm({ form, setForm, loading, onSubmit, }: Prop
         type='submit'
         disabled={loading}
         className="w-full text-center bg-(--brand) py-1.5 mt-2 rounded-md font-semibold
-          hover:bg-(--brand-black) hover:text-white transition-all"
+          hover:bg-(--brand-black) hover:text-white focus:bg-(--brand-black) focus:text-white transition-all"
       >
         {loading ? '생성 중...' : '글 생성'}
       </button>
