@@ -28,6 +28,7 @@ export default function Page() {
       return;
     }
     
+    setResult(null);
     setLoading(true);
 
     const response = await fetch('/api/generate', {
