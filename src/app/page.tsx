@@ -50,7 +50,7 @@ export default function Page() {
   };
 
   return (
-    <main className="flex flex-col items-center">
+    <main className="flex flex-col items-center py-7">
       <div className="w-full px-8 max-w-3xl">
         <Hero />
         <GenerateForm form={form} setForm={setForm} loading={loading} onSubmit={handleSubmit} />
