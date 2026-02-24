@@ -52,13 +52,13 @@ export default function ResultBtns({result, editorRef} : ResultBtnsProps) {
 
   return(
     <div className="flex gap-2 w-full font-semibold">
-      <button onClick={handleCopy} className="bg-white border border-gray-300 w-full px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 transition">
+      <button onClick={handleCopy} className="bg-white border border-gray-300 w-full px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 transition dark:bg-neutral-900 dark:hover:bg-neutral-950">
         복사
       </button>
-      <button onClick={handleDownloadMarkdown} className="min-w-20 px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 transition">
+      <button onClick={handleDownloadMarkdown} className="min-w-20 px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 transition dark:bg-neutral-700 dark:hover:bg-neutral-800">
         .md<br />저장
       </button>
-      <button onClick={handleDownloadHTML} className="min-w-20 px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 transition">
+      <button onClick={handleDownloadHTML} className="min-w-20 px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 transition dark:bg-neutral-700 dark:hover:bg-neutral-800">
         .html<br />저장
       </button>
   </div>

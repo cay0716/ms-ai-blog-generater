@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import localFont from 'next/font/local';
 import "@/app/globals.css";
 import '@toast-ui/editor/toastui-editor.css';
+import "@toast-ui/editor/dist/theme/toastui-editor-dark.css";
 
 const pretendard = localFont({
   src: '../../public/fonts/PretendardVariable.woff2',
